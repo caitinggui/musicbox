@@ -71,12 +71,15 @@ NetEase-MusicBox
 </table>
 
 
-
+### PyPi安装
+	$ pip(3) install NetEase-MusicBox
+	
+### Git clone最新版
+	$ git clone https://github.com/darknessomi/musicbox.git && cd musicbox
+	$ python(3) setup.py install
 
 ### macOS安装
-
-	$ (sudo) pip install NetEase-MusicBox
-
+	$ pip(3) install NetEase-MusicBox
 	$ brew install mpg123
 
 ### Linux安装
@@ -92,7 +95,7 @@ NetEase-MusicBox
 
 #### Arch Linux
 
-    $ pacaur -S netease-musicbox-git
+    $ pacaur -S netease-musicbox-git #or use $ yaourt musicbox
 
 #### 可选功能依赖
 
@@ -129,23 +132,13 @@ NetEase-MusicBox
 
 #### 错误处理
 
-1. pkg_resources.DistributionNotFound: requests
+如遇到在特定终端下不能播放问题，首先检查**此终端**下mpg123能否正常使用，其次检查**其他终端**下musicbox能否正常使用，报告issue的时候请告知以上使用情况以及出问题终端的报错信息。
 
-	$ sudo pip install requests
-
-    如果是运行 $ musicbox 出错
-
-	$ sudo pip install --upgrade setuptools
-
-2. pip: Command not found
-
-	$ sudo apt-get install python-pip
-
-3. ImportError: No module named setuptools
-
-    $ sudo easy_install pip
-
-    $ sudo apt-get install python-setuptools
+#### 已知问题及解决方案
+- [#374](https://github.com/darknessomi/musicbox/issues/374) i3wm下播放杂音或快进问题，此问题常见于Arch Linux。尝试更改mpg123配置。
+- [#404](https://github.com/darknessomi/musicbox/issues/404) 某些环境缺乏lxml。尝试利用包管理器安装lxml或者直接`pip install lxml`。
+- [#405](https://github.com/darknessomi/musicbox/issues/405) 32位Python下cookie时间戳超出了32位整数最大值。尝试使用64位版本的Python或者拷贝cookie文件到对应位置。
+- [#347](https://github.com/darknessomi/musicbox/issues/347) 暂停时间超过一定长度（数分钟）之后mpg123停止输出，导致切换到下一首歌。此问题是mpg123的bug，暂时无解决方案。
 
 ### 使用
 
@@ -155,6 +148,10 @@ NetEase-MusicBox
 Enjoy it !
 
 ### 更新日志
+
+2016-11-24 版本 0.2.3.7    新增背景色设置
+
+2016-11-07 版本 0.2.3.6    已知错误修复
 
 2016-10-16 版本 0.2.3.5    新增进入歌曲专辑功能
 
@@ -173,16 +170,6 @@ Enjoy it !
 2016-05-08 版本 0.2.2.9    缓存问题修复
 
 2016-05-07 版本 0.2.2.8    解决通知在Gnome桌面持续驻留（#303）的问题
-
-2016-05-07 版本 0.2.2.6    已知错误修复
-
-2016-05-05 版本 0.2.2.5    已知错误修复
-
-2016-05-04 版本 0.2.2.4    修复因更换 API 导致版权歌曲播放崩溃
-
-2016-05-04 版本 0.2.2.3    修复部分歌曲跳过问题
-
-2016-04-12 版本 0.2.2.2    修复 OS X 系统桌面歌词置顶和隐藏边框不能共存的问题
 
 [更多>>](Change Log.md)
 

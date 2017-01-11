@@ -72,9 +72,9 @@ class Player(object):
                                                   stdin=subprocess.PIPE,
                                                   stdout=subprocess.PIPE,
                                                   stderr=subprocess.PIPE)
-            self.popen_handler.stdin.write(b'V ' + str(self.info['playing_volume']).encode('u8') + b'\n')
+            self.popen_handler.stdin.write(b'V ' + str(self.info['playing_volume']).encode('utf-8') + b'\n')
             if arg:
-                self.popen_handler.stdin.write(b'L ' + arg.encode('u8') + b'\n')
+                self.popen_handler.stdin.write(b'L ' + arg.encode('utf-8') + b'\n')
             else:
                 self.next_idx()
                 onExit()
@@ -87,7 +87,7 @@ class Player(object):
                 if self.playing_flag is False:
                     break
 
-                strout = self.popen_handler.stdout.readline().decode('u8')
+                strout = self.popen_handler.stdout.readline().decode('utf-8')
 
                 if re.match('^\@F.*$', strout):
                     process_data = strout.split(' ')
@@ -105,13 +105,13 @@ class Player(object):
                     new_url = NetEase().songs_detail_new_api([sid])[0]['url']
                     if new_url is None:
                         log.warning(('Song {} is unavailable '
-                                     'due to copyright issue').format(sid))
+                                     'due to copyright issue.').format(sid))
                         break
                     log.warning(
                         'Song {} is not compatible with old api.'.format(sid))
                     popenArgs['mp3_url'] = new_url
 
-                    self.popen_handler.stdin.write(b'\nL ' + new_url.encode('u8') + b'\n')
+                    self.popen_handler.stdin.write(b'\nL ' + new_url.encode('utf-8') + b'\n')
                     self.popen_handler.stdin.flush()
                     self.popen_handler.stdout.readline()
                 elif strout == '@P 0\n':
@@ -357,14 +357,13 @@ class Player(object):
                 playinglist_len = len(self.info['playing_list'])
                 # When you regenerate playing list
                 # you should keep previous song same.
-                try:
-                    self._swap_song()
-                except Exception as e:
-                    log.error(e)
+                self._swap_song()
+
             self.info['ridx'] += 1
             # Out of border
             if self.info['playing_mode'] == 4:
                 self.info['ridx'] %= playinglist_len
+
             if self.info['ridx'] >= playinglist_len:
                 self.info['idx'] = playlist_len
             else:
@@ -431,7 +430,7 @@ class Player(object):
         if not self.playing_flag:
             return
         self.popen_handler.stdin.write(b'V ' + str(self.info[
-            'playing_volume']).encode('u8') + b'\n')
+            'playing_volume']).encode('utf-8') + b'\n')
         self.popen_handler.stdin.flush()
 
     def volume_down(self):
@@ -442,27 +441,26 @@ class Player(object):
             return
 
         self.popen_handler.stdin.write(b'V ' + str(self.info[
-            'playing_volume']).encode('u8') + b'\n')
+            'playing_volume']).encode('utf-8') + b'\n')
         self.popen_handler.stdin.flush()
 
     def update_size(self):
-        try:
-            self.ui.update_size()
+        self.ui.update_size()
+        if not 0 <= self.info['idx'] < len(self.info['player_list']):
+            if self.info['player_list']:
+                log.error('Index not in range!')
+                log.debug(self.info)
+        else:
             item = self.songs[self.info['player_list'][self.info['idx']]]
             if self.playing_flag:
                 self.ui.build_playinfo(item['song_name'], item['artist'],
                                        item['album_name'], item['quality'],
                                        time.time())
             if self.pause_flag:
-                self.ui.build_playinfo(item['song_name'],
-                                       item['artist'],
-                                       item['album_name'],
-                                       item['quality'],
+                self.ui.build_playinfo(item['song_name'], item['artist'],
+                                       item['album_name'], item['quality'],
                                        time.time(),
                                        pause=True)
-        except Exception as e:
-            log.error(e)
-            pass
 
     def cacheSong1time(self, song_id, song_name, artist, song_url):
         def cacheExit(song_id, path):
